@@ -1,0 +1,7 @@
+{
+  "name": "Editor Dokumen Profesional",
+  "description": "Editor dokumen profesional dengan arsitektur terpisah antara desktop/PC editor (menu bar bertingkat, toolbar lengkap, ruler, split markdown) dan mobile editor (bottom sheet, drawer touch-first, accessory bar).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
