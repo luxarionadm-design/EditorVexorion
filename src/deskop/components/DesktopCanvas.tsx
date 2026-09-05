@@ -130,9 +130,9 @@ export const DesktopCanvas: React.FC<DesktopCanvasProps> = ({
               className={`editor-content rounded-sm shadow-xl border focus:outline-hidden transition-all duration-200 ${
                 viewMode === "page"
                   ? pageSetup.orientation === "landscape"
-                    ? "w-[1056px] min-h-[816px] p-16 my-4"
-                    : "w-[816px] min-h-[1056px] p-16 my-4"
-                  : "w-[900px] max-w-[95vw] min-h-[800px] p-8 sm:p-12 my-2 rounded-xl"
+                    ? "w-full max-w-[1056px] min-h-[750px] p-6 sm:p-10 md:p-14 my-4"
+                    : "w-full max-w-[816px] min-h-[950px] p-6 sm:p-10 md:p-14 my-4"
+                  : "w-full max-w-[850px] min-h-[750px] p-6 sm:p-10 my-2 rounded-xl"
               } ${
                 theme === "obsidian"
                   ? "bg-[#18181b] border-stone-700 text-stone-100 shadow-stone-950"

@@ -120,18 +120,24 @@ export const DocumentOutline: React.FC<Props> = ({
   if (!isOpen) return null;
 
   return (
-    <aside className="w-64 sm:w-72 max-w-[80vw] border-r border-stone-200 bg-stone-50 flex flex-col shrink-0 select-none text-xs text-stone-700 h-full z-20 shadow-xs">
-      {/* Top Header with title and close button */}
-      <div className="flex items-center justify-between px-3 py-2 border-b border-stone-200 bg-white">
-        <span className="font-semibold text-stone-800 tracking-tight">Panel Navigasi</span>
-        <button
-          onClick={onClose || onToggle}
-          className="p-1 rounded-md text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition"
-          title="Tutup Panel"
-        >
-          <X className="w-3.5 h-3.5" />
-        </button>
-      </div>
+    <>
+      {/* Backdrop for small screens when outline is open */}
+      <div
+        className="fixed inset-0 bg-black/20 z-20 lg:hidden backdrop-blur-2xs transition-opacity"
+        onClick={onClose || onToggle}
+      />
+      <aside className="w-72 max-w-[85vw] border-r border-stone-200 bg-stone-50 flex flex-col shrink-0 select-none text-xs text-stone-700 h-full absolute lg:relative top-0 left-0 z-30 shadow-2xl lg:shadow-none">
+        {/* Top Header with title and close button */}
+        <div className="flex items-center justify-between px-3 py-2 border-b border-stone-200 bg-white">
+          <span className="font-semibold text-stone-800 tracking-tight">Panel Navigasi</span>
+          <button
+            onClick={onClose || onToggle}
+            className="p-1 rounded-md text-stone-400 hover:text-stone-700 hover:bg-stone-100 transition"
+            title="Tutup Panel"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
 
       {/* Tabs */}
       <div className="flex border-b border-stone-200 bg-stone-100/70 p-1 gap-1">
@@ -340,5 +346,6 @@ export const DocumentOutline: React.FC<Props> = ({
         )}
       </div>
     </aside>
+    </>
   );
 };

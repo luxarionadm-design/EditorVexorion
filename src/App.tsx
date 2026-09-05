@@ -14,7 +14,12 @@ import { AIAssistantModal } from "./components/modals/AIAssistantModal";
 
 import { initialDocuments } from "./data/sampleDocuments";
 import { DocumentFile, ViewMode, EditorTheme, PageSetup, DocumentStats, DeviceMode } from "./types";
-import { isMobileDevice, getDeviceInfo, listenDeviceChange } from "./utils/AutoDetect.js";
+import {
+  isMobileDevice,
+  getDeviceInfo,
+  listenDeviceChange,
+  getIdealZoom,
+} from "./utils/AutoDetect.js";
 import {
   calculateDocumentStats,
   htmlToMarkdown,
@@ -27,14 +32,18 @@ import {
 export function App() {
   // --- STATE: DEVICE MODE (MOBILE VS PC) ---
   const [deviceMode, setDeviceMode] = useState<DeviceMode>(() => {
+    // 1. Mobile devices (Android, iPhone, etc.) or small screens always use mobile mode by default
+    if (typeof window !== "undefined" && isMobileDevice()) {
+      return "mobile";
+    }
+    // 2. On larger screens, check saved preference or default to pc
     try {
       const saved = localStorage.getItem("doceditor_device_mode");
       if (saved === "mobile" || saved === "pc") return saved as DeviceMode;
     } catch (e) {
       console.error(e);
     }
-    // Auto-detect based on AutoDetect.js
-    return isMobileDevice() ? "mobile" : "pc";
+    return "pc";
   });
 
   // Switch device mode and remember preference
@@ -50,14 +59,18 @@ export function App() {
   // Auto-adapt on window resize / orientation change using AutoDetect.js
   useEffect(() => {
     const unsubscribe = listenDeviceChange((info) => {
-      try {
-        const saved = localStorage.getItem("doceditor_device_mode");
-        // Only auto-switch if user hasn't explicitly set preference or if viewport drastically shifted
-        if (!saved) {
-          setDeviceMode(info.deviceMode);
+      // Auto-adapt when screen transitions between mobile (<768) and desktop (>=1024)
+      if (info.isMobile) {
+        setDeviceMode("mobile");
+      } else if (info.isDesktop) {
+        try {
+          const saved = localStorage.getItem("doceditor_device_mode");
+          if (saved !== "mobile") {
+            setDeviceMode("pc");
+          }
+        } catch (e) {
+          setDeviceMode("pc");
         }
-      } catch (e) {
-        console.error(e);
       }
     });
     return unsubscribe;
@@ -83,9 +96,19 @@ export function App() {
   // --- STATE: VIEW & THEME ---
   const [viewMode, setViewMode] = useState<ViewMode>("page");
   const [theme, setTheme] = useState<EditorTheme>("clean-light");
-  const [zoom, setZoom] = useState<number>(100);
+  const [zoom, setZoom] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      return getIdealZoom(window.innerWidth);
+    }
+    return 100;
+  });
   const [showRuler, setShowRuler] = useState<boolean>(true);
-  const [showOutline, setShowOutline] = useState<boolean>(true);
+  const [showOutline, setShowOutline] = useState<boolean>(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 1200) {
+      return false; // hide outline by default on smaller screens so canvas is never cramped
+    }
+    return true;
+  });
   const [showStatusBar, setShowStatusBar] = useState<boolean>(true);
   const [isZenMode, setIsZenMode] = useState<boolean>(false);
 

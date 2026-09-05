@@ -17,6 +17,28 @@ export const BREAKPOINTS = {
 };
 
 /**
+ * Menghitung tingkat perbesaran / zoom ideal agar tampilan dokumen pas dan tidak kebesaran
+ * @param {number} [width] - lebar layar (opsional, otomatis mengambil dari window)
+ * @returns {number} zoom ideal (antara 70% hingga 100%)
+ */
+export function getIdealZoom(width) {
+  const w = width || (typeof window !== "undefined" ? window.innerWidth : 1200);
+  if (w < 480) return 70;
+  if (w < 768) return 80;
+  if (w < 1080) return 90;
+  return 100;
+}
+
+/**
+ * Mendeteksi apakah layar saat ini sempit (< 768px)
+ * @returns {boolean}
+ */
+export function isSmallScreen() {
+  if (typeof window === "undefined") return false;
+  return window.innerWidth < BREAKPOINTS.MOBILE_MAX;
+}
+
+/**
  * Mendeteksi apakah pengguna saat ini menggunakan Mobile Device.
  * @returns {boolean} true jika mobile/ponsel, false jika desktop/pc
  */
@@ -148,6 +170,8 @@ export function listenDeviceChange(onChange) {
 export default {
   BREAKPOINTS,
   isMobileDevice,
+  isSmallScreen,
+  getIdealZoom,
   getDeviceInfo,
   listenDeviceChange,
 };
